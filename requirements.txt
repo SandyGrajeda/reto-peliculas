@@ -1,0 +1,5 @@
+streamlit
+pandas
+firebase-admin
+sqlalchemy
+psycopg2-binarygit init
