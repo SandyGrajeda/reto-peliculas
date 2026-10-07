@@ -2,4 +2,5 @@ streamlit
 pandas
 firebase-admin
 sqlalchemy
-psycopg2-binarygit
+psycopg2-binary
+python-dotenv
