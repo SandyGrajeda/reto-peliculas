@@ -26,11 +26,11 @@ db = firestore.client()
 try:
     if "postgres" in st.secrets:
         pg = st.secrets["postgres"]
-        DATABASE_URL = f"postgresql://{pg['username']}:{pg['password']}@{pg['host']}:{pg['port']}/{pg['database']}?sslmode=require"
+        DATABASE_URL = f"postgresql+psycopg2://{pg['username']}:{pg['password']}@{pg['host']}:{pg['port']}/{pg['database']}?sslmode=require"
     else:
-        DATABASE_URL = "postgresql://avnadmin:AVNS_0v9MWg2dhG-JE-r-iLt@guests-db-guests.k.aivencloud.com:22347/defaultdb?sslmode=require"
+        DATABASE_URL = "postgresql+psycopg2://avnadmin:AVNS_0v9MWg2dhG-JE-r-iLt@guests-db-guests.k.aivencloud.com:22347/defaultdb?sslmode=require"
 except Exception:
-    DATABASE_URL = "postgresql://avnadmin:AVNS_0v9MWg2dhG-JE-r-iLt@guests-db-guests.k.aivencloud.com:22347/defaultdb?sslmode=require"
+    DATABASE_URL = "postgresql+psycopg2://avnadmin:AVNS_0v9MWg2dhG-JE-r-iLt@guests-db-guests.k.aivencloud.com:22347/defaultdb?sslmode=require"
 
 engine = create_engine(DATABASE_URL)
 
