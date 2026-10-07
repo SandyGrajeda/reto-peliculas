@@ -4,16 +4,18 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from sqlalchemy import create_engine, text
 
-
 st.set_page_config(page_title="Películas de Netflix", page_icon="🎬", layout="wide")
 st.markdown('<html lang="es" class="notranslate" translate="no"><head><meta name="google" content="notranslate" /></head>', unsafe_allow_html=True)
 
 
 if not firebase_admin._apps:
-    if "firebase" in st.secrets:
-        key_dict = dict(st.secrets["firebase"])
-        cred = credentials.Certificate(key_dict)
-    else:
+    try:
+        if "firebase" in st.secrets:
+            key_dict = dict(st.secrets["firebase"])
+            cred = credentials.Certificate(key_dict)
+        else:
+            cred = credentials.Certificate("firebase_key.json")
+    except Exception:
         cred = credentials.Certificate("firebase_key.json")
     
     firebase_admin.initialize_app(cred)
@@ -21,10 +23,13 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 
-if "postgres" in st.secrets:
-    pg = st.secrets["postgres"]
-    DATABASE_URL = f"postgresql://{pg['username']}:{pg['password']}@{pg['host']}:{pg['port']}/{pg['database']}?sslmode=require"
-else:
+try:
+    if "postgres" in st.secrets:
+        pg = st.secrets["postgres"]
+        DATABASE_URL = f"postgresql://{pg['username']}:{pg['password']}@{pg['host']}:{pg['port']}/{pg['database']}?sslmode=require"
+    else:
+        DATABASE_URL = "postgresql://avnadmin:AVNS_0v9MWg2dhG-JE-r-iLt@guests-db-guests.k.aivencloud.com:22347/defaultdb?sslmode=require"
+except Exception:
     DATABASE_URL = "postgresql://avnadmin:AVNS_0v9MWg2dhG-JE-r-iLt@guests-db-guests.k.aivencloud.com:22347/defaultdb?sslmode=require"
 
 engine = create_engine(DATABASE_URL)
@@ -50,7 +55,6 @@ data = load_movies_data()
 
 st.title("Aplicación películas de Netflix")
 st.caption("Nota: Para buscar por filtro debes tener deseleccionado 'Mostrar todas las películas'.")
-
 
 sidebar_checkbox = st.sidebar.checkbox("Mostrar todas las peliculas")
 st.sidebar.write("---")
@@ -93,6 +97,7 @@ if btn_submit_guest:
         st.sidebar.error("Completa tu correo y comentario.")
 
 btn_view_comments = st.sidebar.button("Ver comentarios de visitantes")
+
 
 if btn_add_movie:
     if new_movie_name.strip() != "":
